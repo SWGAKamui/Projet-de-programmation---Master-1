@@ -1,0 +1,64 @@
+\newpage
+\section{Partie interpréteur}
+
+
+
+\subsection{Les classes}
+
+En Javascript, l'implémentation des classes peut se faire de plusieurs manières. Il existe la façon avec le mot clé '{\tt class}'. Cette manière, bien que plus claire et plus facile à comprendre, n'est pas supportée par tous les navigateurs. Et comme la portabilité est l'un de nos besoins de qualité, nous avons préféré la manière "classique" de créer des classes en Javascript.
+
+La déclaration est par contre un peu différente des autres langages Orientés Objet comme Java ou C++. Nous donnons l'exemple suivant de l'implémentation de la classe {\tt Job}:\\
+
+\begin{lstlisting}
+
+function Job(map, reduce) { 
+    this.map = map;
+    this.reduce = reduce;
+}
+
+Job.prototype.applyMap = function(data) {
+	... //Appel a this.map 
+}
+
+Job.prototype.applyReduce = function(data) {
+    ... //Appel a this.reduce
+}
+
+\end{lstlisting}
+
+%En plus de cette classe, nous utilisons 
+
+\subsection{Retranscription du process mapReduce}
+
+
+Pour les besoins de notre projet, nous n'avons pas basé notre implémentation du code sur les classes mais plutot sur les fonctions. Pour cela, nous avons centré le code de l'interpréteur dans un seul fichier .js qui contient, en plus des classes du projet, les fonctions qui interprétent le code mapReduce pour fournir les sorties (outputs).
+
+\subsubsection{Fonction split}
+
+\subsubsection{Fonction eval}
+
+\subsubsection{Fonction partitionDataOnMappers}
+
+
+
+\subsection{Les expressions régulières}
+
+L'un des problèmes qui peuvent s'imposer est que le retour à la ligne n'est pas le même sous les différents systèmes d'exploitation (Linux, Windows et macOS). En effet, sous Windows le retour à la ligne est décelé avec "\escape{n}" alors que sous MacOS c'est fait avec "\r". 	
+Nous avons donc utilisé une expression régulière dans la fonction {\tt split()} pour séparer les lignes du fichier {\tt CSV} quelque soit le système d'exploitation sous lequel il a été écrit.\\
+
+Dans la même fonction split, on utilise une autre expression régulière 
+%%ici apparait Big Data
+
+
+\subsection{Difficultés rencontrées}
+
+- Apprentissage du process de mapReduce (a pris du temps etc)\\
+- Retranscrire la distribution normalement faite par Hadoop.\\
+- Récupérer les fonctions en JS écrites par l'utilisateur et les appliquer sur les données.
+
+\subsection{Limitations}
+- Pas de free pour les tasks terminées.\\
+- Malheureusement, pour des contraintes de temps, nous n'avons pas réussi à implémenter la phase de combiner ni l'exportation du code mapReduce en Java.\\
+- Gestion d'erreurs: 
+
+{\bf Amélioration possible:} rajouter un analyseur syntaxique pour le code javascript entré et faire un retour à l'utilisateur sur les erreurs potentiellement commises sur son code.

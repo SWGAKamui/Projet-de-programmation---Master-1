@@ -1,0 +1,264 @@
+<html lang="fr">
+  <head>
+    <title>Visual MapReduce</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="keywords" content="Visual MapReduce Pdp" />
+    <meta name="description" content="Projet Pdp 2016-2017" />
+    <link rel="stylesheet" href="../vendor/materialize/css/main.css" />
+    
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="../vendor/materialize/css/materialize.min.css"  media="screen,projection"/>
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+  <body>        
+    
+    <!--       Header        -->
+    <nav class="nav-extended light-blue darken-1">
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo">Visual MapReduce</a>
+        <ul class="side-nav" id="mobile-demo">
+          <li><a href="index.html">Acceuil</a></li>
+          <li><a href="apropos.html">A Propos</a></li>
+          <li><a href="start.html">Commencer</a></li>
+        </ul>
+      </div>
+      <div class="nav-content">
+        <ul class="tabs tabs-transparent">
+          <li class="tab"><a class="active" href="#acceuil">Acceuil</a></li>
+          <li class="tab"><a href="#start">Commencer</a></li>
+          <li class="tab"><a href="#propos">A propos</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div id="acceuil" class="col s12">
+      <!--Acceuil-->
+      <br/>
+      <div class="container">
+      <!--Logo universite-->
+        <div class="row">
+          <div class="col s3">
+            <img class="imgacc" src="img/universite.svg" alt="Logo Universite">
+          </div>
+          <!--Icon loading fatum-->
+          <div class="col s3 offset-s3">
+            <div class="preloader-wrapper big active" id="loading_fatum">
+              <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                  <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                  <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                  <div class="circle"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Logo labri-->
+          <div class="col s3 offset-s6">
+            <img class="imgacc2" src="img/labri.jpg" alt="Logo Universite">
+          </div>
+
+
+
+          <div class="col s12">
+            <h1 class="center">Projet de Programation</h1>
+          </div>
+          <div class="col s12">
+            <h2 class="center">2016 - 2017</h2>
+          </div>
+          <div class="col s12">
+            <p class="center">AL CHAHID Kinda - ESPIAUT Marc-Alexandre - HENTATI Imen - YJJOU Oualid</p>
+          </div>     
+        </div>
+      </div>
+    </div>
+    
+    <!--start-->
+    <div id="start" class="col s12">
+      <br/>
+      <div class="container">
+        <div class="row">
+          <!--Colonne droite parametre Fichier-->
+          <div class="col s4">
+            <h5>Fichiers:</h5>
+            <div class="card-panel teal lighten-5">
+              <form action="#">
+                <div class="file-field input-field"  id="uploadCSV" >
+                  <div class="btn">
+                    <span>File</span>
+                    <input id="inputcsv" type=file   accept=".csv" name="files[]" onchange='openFileCSV(event)'>
+                  </div>
+                  <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text" placeholder="*.CSV">
+                  </div>
+                </div>
+              </form>
+
+              <form action="#">
+                <div class="file-field input-field"  id="uploadJS">
+                  <div class="btn">
+                    <span>File</span>
+                    <input id="inputjs" type=file   accept=".js" name="files[]" onchange='openFileJS(event)'>
+                  </div>
+                  <div class="file-path-wrapper">
+                    <input  class="file-path validate"  type="text" placeholder="*.JS">
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <!--Colonne droite parametre cluster Mappeur-->
+          <div class="col s4">
+            <h5>Map Cluster:</h5>
+            <div class="card-panel teal lighten-5">
+              <div>
+                <div class="input-field inline">
+                  <input id="number1" type="number" class="validate">
+                  <label for="number" >Nombre pc</label>
+                </div>
+              </div>
+              <br/>
+              <div>
+                <div class="input-field inline">
+                  <input id="number2" type="number" class="validate">
+                  <label for="number" >Nombre coeur</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Colonne droite parametre cluster Reduceur-->
+          <div class="col s4">
+            <h5>Reduce Cluster:</h5>
+            <div class="card-panel teal lighten-5">
+              <br/>
+              <br/>
+              <div>
+                <div class="input-field inline">
+                  <input id="number3" type="number" class="validate">
+                  <label for="number" >Nombre de Slots</label>
+                </div>
+              </div>
+              <br/>
+              <br/>
+            </div>
+          </div>
+          <!--Colonne gauche Code Run-->
+
+          <div class="col s12">
+            <h5>Section code:</h5>
+            <div class="input-field large teal lighten-5 center">
+              <br/>
+              <textarea class="materialize-textarea textarea" style="overflow:auto;resize:none;min-height:300;max-height: 300;font-family:monospace;" rows="13" cols="20" id="mapReduceText">
+		/**
+		** Les fonctions doivent impérativement s'appeler "map" et "reduce" sans majuscule
+		** La fonction map prend en entrée les lignes de données.
+		** Chaque ligne a des éléments séparés par des " ". 
+		** Les fonctions map et reduce retournent un ensemble de <key,value>
+		  ** La fonction getPartition est la customisation de l'utilisateur. Si elle est laissée vide, par défaut elle utilise hashCode.
+		  **/
+		  //les fonctions map et reduce retournent un ensemble {key,value}
+
+		  function map(data) {
+		  var res = [];
+		  var t = data.split(" ");
+		  for(var i in t) {
+		  var w = t[i];
+		  res.push({key:w,value:1});
+		  }
+		  return res;
+		  }
+
+		  function reduce(key,values) {
+		  return {key:key, value: values.reduce(function(a, b) { return a + b; }, 0)};
+		  }
+		  function getPartition(key,value,numPartitions){
+		  
+		  }
+              </textarea>
+              
+              <a id="run" href="#" class="waves-effect waves-light btn center"><i class="material-icons left"></i>Run</a>
+              &nbsp;&nbsp;&nbsp;
+              <a id="download" href="#" class="waves-effect waves-light btn center"><i class="material-icons left"></i>Download</a>
+            </div>
+          </div>
+          <div class="col s8" id="simulation">
+            <h5 id="error" style="color:red;"> </h5>
+            <h5>Simulation:</h5> 
+            <div class="col s3 center">
+              <h5>Entrée map</h5>
+            </div>
+            <div class="col s3 center">
+              <h5>Sortie map</h5>
+            </div>
+            <div class="col s6 center">
+              <h5>Sortie reduce</h5>
+            </div>
+            <br/>
+            <br/>
+            <div id="cluster" class="card-panel teal lighten-5 center">
+              <!--Cluster-->
+              <canvas id="fatum-demo"  onclick="onclick_page(event);" style="width:100%; height:100%; background-color:transparent;"></canvas>
+            </div>
+          </div>
+          <div class="col s4">
+            
+            
+              <br/>
+              <br/>
+            <h5>Données:</h5>
+            <div id="contenu_" class="card-panel teal lighten-5 center">
+              <br/>
+              <br/>
+              <textarea id="text_data" class="materialize-textarea"  style="height:100%;overflow: auto;"></textarea>
+            </div>
+          </div>
+        </div>
+      </div> 
+    </div>
+    
+    
+    
+    <!--A propos-->
+    <div id="propos" class="col s12">
+      <div class="container">
+        <div class="row">
+          <div class="col s8">
+            <h1>A propos</h1>
+          </div>
+          <div class="col s12">
+            <p>Cette <b>application</b> a été réalisé dans le cadre de l'unité d'enseignement "Projet de Programamtion".</p>
+            <p>Son développement en totalité a été effectué par un groupe d'étudiants en <b>Master 1</b> Informatique.</p>
+            <p>Le paradigme de programmation MapReduce permet de traiter des grandes masses de données de manière massivement parallèle. Depuis sa création par Google en 2004, il est devenu grâce à l'implémentation libre Hadoop le standard dans le domaine du Big Data.</p>
+          </div>
+        </div>
+      </div>            
+    </div>
+    <!-- Footer -->
+    <footer class="page-footer light-blue darken-1">
+      <div class="footer-copyright">
+        <div class="container">
+          © 2017 Copyright Text
+          <a class="grey-text text-lighten-4 right" href="https://www.u-bordeaux.fr/"><img class="imgres" src="img/universite.svg" alt="Logo Universite"></a>
+        </div>
+      </div>
+
+    </footer>
+    <!--Toujours à la fin-->
+    <!--Appelle des fichiers JS-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="http://www.labri.fr/perso/aperrot/fatum/pdp/fatum.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/view/view.js"></script>
+    <script type="text/javascript" src="js/view/event.js"></script>
+    <script type="text/javascript" src="js/view/param.js"></script>
+    <script type="text/javascript" src="../vendor/materialize/js/materialize.min.js"></script>
+    <script type="text/javascript" src="js/interpreteur/classes.js"></script>
+  </body>
+</html>

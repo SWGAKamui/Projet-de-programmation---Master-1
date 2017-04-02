@@ -1,0 +1,10 @@
+---- Concerning the file "shuffleComplement.js" ----
+
+It contains functions dealing with the links between map-shuffle-reduce.
+
+We implemented these functions (and classes) but later removed them because
+our client specified the unnecessary linking between map-shuffle-reduce
+ and that a map-reduce linking was enough.
+
+We kept this file for possible need later by people who'd be interested 
+to continue the project. 

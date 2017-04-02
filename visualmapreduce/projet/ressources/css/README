@@ -1,0 +1,13 @@
+----- CSS FOLDER -----
+
+
+This folder supposedly contains all CSS implementation of the project.
+
+The fact that we use MaterializeCSS given css files, it's very hard to separate our
+own css code from MaterializeCSS's.
+
+This explains why this repository is empty.
+
+All CSS files are found under /vendor/materialize/.
+
+
