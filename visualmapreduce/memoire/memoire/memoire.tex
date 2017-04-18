@@ -16,6 +16,7 @@
 \usepackage{hyperref}
 \usepackage{titlesec}
 \usepackage{tabularx}
+\usepackage[scaled, mono=false]{libertine}
 
 \titleformat{\subsubsection}
 {\color{blue}\normalfont\large\bfseries}
@@ -27,7 +28,6 @@
 \definecolor{darkgray}{rgb}{.4,.4,.4}
 \definecolor{purple}{rgb}{0.65, 0.12, 0.82}
 \definecolor{dkgreen}{rgb}{0,0.5,0}
-
 
 \lstdefinelanguage{JavaScript}{
   keywords={Job,typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
@@ -68,20 +68,14 @@
 %%% Page de garde %%%
 \begin{titlepage}
 \begin{center}
-
 \includegraphics[width=0.3\textwidth]{images/universite_bordeaux_logo.pdf}\\[1cm]    
-
 \textsc{\LARGE Université de Bordeaux}\\[1.5cm]
-
 \textsc{\Large Mémoire du Projet de Programmation}\\[0.5cm]
-
 \vspace{30pt}
 % Title
 \HRule \\[0.4cm]
 { \huge \bfseries VisualMapReduce}\\[0.4cm]
-
 \HRule \\[1.5cm]
-
 % Author and supervisor
 \begin{minipage}{0.4\textwidth}
 \begin{flushleft} \large
@@ -100,32 +94,21 @@ Alexandre \textsc{Perrot}\\
 Maria \textsc{Predari}
 \end{flushright}
 \end{minipage}
-
 \vfill
-
 % Bottom of the page
 {\large \today}
-
 \end{center}
-
 \end{titlepage}
-
 
 \tableofcontents
 
 \input{Introduction.tex}
 \input{Presentation.tex}
-
 \input{Analyse.tex}
-
-
 \input{Architecture.tex}
 \input{Implementation.tex}
 \input{Fonctionnement.tex}
-
 \input{Resultat.tex}
-
-
 \input{Gestion.tex}
 \input{Conclusion.tex}
 

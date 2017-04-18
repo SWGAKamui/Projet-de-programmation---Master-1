@@ -27,7 +27,7 @@ function test_param() {
     var error;
     var error_csv
     //===== file=====
-    if(data_csv == undefined){
+    if (data_csv == undefined) {
         error_csv = "<div class='error'><i class='material-icons'>error</i>Fichier vide<br/> Veuillez charger de nouveau un fichier csv</div>"
         $("h5 + div > form + form").append(error_csv);
         config = false;

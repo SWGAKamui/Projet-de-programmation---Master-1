@@ -11,7 +11,7 @@
 //          openFileJS()
 //          openFileCSV()
 //          zoomHandler()   
-//          download(data)      
+//          download_output(data,filename)      
 //-------------------------------------------------------------------
 
 
@@ -120,7 +120,3 @@ function download_output(data, filename) {
     element.click();
     document.body.removeChild(element);
 }
-
-// Start file download.
-//document.getElementById("download").addEventListener("click", function(){
-//}, false);

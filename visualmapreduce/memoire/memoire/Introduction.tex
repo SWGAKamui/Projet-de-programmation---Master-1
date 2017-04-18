@@ -1,17 +1,11 @@
 \chapter*{Introduction}
-Avec l'augmentation\footnote{2.5 trillions d'octets de données par jour.} du volume de données à traiter, le BigData (Données Massives) est une problématique qui s'est progressivement introduite en entreprise.\cite{JoliaFerrierBigData} MapReduce est un algorithme qui tente d'apporter une réponse satisfaisante au traitement d'un grand volume de donnée. \\
+Avec l'augmentation\footnote{2.5 trillions d'octets de données par jour\cite{mapReduceTextProcessing}.} du volume de données à traiter, le BigData (Données Massives) est une problématique qui s'est progressivement introduite en entreprise\cite{JoliaFerrierBigData}. {\it MapReduce} est un algorithme qui tente d'apporter une réponse satisfaisante au traitement d'un grand volume de données en un temps raisonnable.\\
 
-MapReduce exploite le concept de {\tt "Diviser-Pour-Régner"} dont le fondement est de diviser un large problème en petits sous-problèmes qui sont indépendants les uns des autres dans le but de les traiter en parallèle\cite{mapReduceTextProcessing}. C'est donc un pradigme de programmation servant à traiter et à générer de grands jeux de données avec un algorithme distribué et parallelisé.\\
+{\it MapReduce} exploite le concept de « {\it diviser pour régner} » dont le fondement est de diviser un large problème en petits sous problèmes indépendants les uns des autres dans le but de les traiter en parallèle\cite{mapReduceTextProcessing}. C'est paradigme de programmation servant à traiter et à générer de grands jeux de données avec un algorithme distribué et parallélisé.\\
 
-L'exécution d'un programme MapReduce se fait sur un cluster\footnote{Un \textit{cluster} est une grappe de machines sur un réseau.} contenant généralement un grand nombre de machines, ce qui rend le débogage compliqué. En effet, si une des machines ne parvient pas à exécuter le programme correctement, le retour n'est pas fait à l'utilisateur et l'identification de l'origine du problème est difficile.
-Le but de VisualMapReduce est de simuler le fonctionnement d'un programme MapReduce sur un cluster de machines homogènes (c'est-à-dire qu'elles possèdent toutes les mêmes caractéristiques matérielles) afin de pouvoir le tester avant son application dans le monde réel pour éviter ce genre de problèmes.
+L'exécution d'un programme {\it MapReduce} se fait sur un cluster\footnote{Une grappe de machines sur un réseau.} contenant généralement un grand nombre de machines, ce qui rend le débogage compliqué. En effet, si une des machines ne parvient pas à exécuter le programme correctement, le retour n'est pas fait à l'utilisateur et l'identification de l'origine du problème est difficile.\\
 
-\paragraph{}
+Le but de {\it VisualMapReduce} est de simuler le fonctionnement d'un programme {\it MapReduce} sur un cluster de machines homogènes, c'est-à-dire qu'elles possèdent toutes les mêmes caractéristiques matérielles, afin de pouvoir le tester avant son application dans le monde réel pour éviter ce genre de problème.\\
 
- MapReduce \cite{Bdpedia} décrit deux tâches principales: la tâche {\tt map()} qui converti un jeu de donnée A en un jeu de donnée B, où les éléments individuels sont découpés en tuples (paire clé/valeur), et la tâche reduce() prends en entrée le résultat produit par map() pour combiner les tuples de données produites en un plus petit jeu de tuples.
-Comme le nom MapReduce l'indique, la tâche {\tt reduce()} s'effectue toujours après la tâche {\tt map()}.
-\paragraph{}
-%Plusieurs entreprises utilise le MapReduce de Google tel que FaceBook\cite{ApacheWikiFacebook} qui l'utilise pour analyser ses données dans le but d'améliorer et signaler des données mais également pour du machine learning.
 
-\section*{Plan du mémoire}
-plan a mettre sous forme de paragraphe (sans section)
+Nous présenterons d'abord le détail du projet, puis nous aborderons les points évoqués dans le cahier des besoins. Nous expliquerons les points techniques écrits ainsi que leurs tests respectifs. Enfin nous aborderons les résultats de l'application et la gestion du temps/tâches.

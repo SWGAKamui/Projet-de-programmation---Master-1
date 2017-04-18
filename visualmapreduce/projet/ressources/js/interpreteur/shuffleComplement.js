@@ -9,6 +9,7 @@
 //          linkMapShuffle(): create arrow between map and shuffle
 //          distributeMapShuffle(): distribute shuffle data on slots
 //          distributeInitial(): create object of Slot type and affect tasks
+//          singleDataToArray(lst_data): transform the tab data into string
 //-------------------------------------------------------------------
 
 
@@ -30,6 +31,18 @@ function linkMapShuffle() {
     }
 }
 
+
+function singleDataToArray(lst_data) {
+    var lst = [];
+    var tmp = lst_data.slice(0);
+    for (var i = 0; i < tmp.length; i++) {
+        tmp[i] = tmp[i].split(" ");
+        for (j = 0; j < tmp[i].length; j++) {
+            lst.push(tmp[i][j]);
+        }
+    }
+    return lst;
+}
 
 function distributeMapShuffle(shuffleRes, totalNbSlots) {
     var lstSlotShuffle = new Array();

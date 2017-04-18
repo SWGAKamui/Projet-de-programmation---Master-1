@@ -13,8 +13,8 @@
 //                   reduce: fonction
 //
 //      Methods:    applyMap(lignes_txt): Array(<K1,V1>)
-//                  applyReduce( output_shuffle )
 //                  shuffle(output_map ) : Array(<K1,{V1,V2,V3..}>)
+//                  applyReduce( output_shuffle )
 //                  run(lignes_txt)
 //-------------------------------------------------------------------
 
@@ -67,6 +67,7 @@ Job.prototype.run = function(data) {
 //                  indicating which partition to send the key and value to. 
 //                  For any two keys k1 and k2, k1.equals(k2) implies 
 //                  getPartition(k1, *, n) == getPartition(k2, *, n).
+//              String.Hashcode : Implementation of the function hashCode which doesn't exist in javasript
 //                               
 //-------------------------------------------------------------------
 var MAX_VALUE = 24;
@@ -84,9 +85,9 @@ Partitioner.prototype.setPartitionerFunction = function(partFunc) {
 }
 
 Partitioner.prototype.applyPartitioner = function(map_output, numPartitions) {
-    var res = new Array(),
+    var res = [],
         tmp;
-    var partition, keyval,j,found;
+    var partition, keyval, j, found;
 
     for (var i = 0; i < map_output.length; i++) {
         keyval = map_output[i];
@@ -98,7 +99,7 @@ Partitioner.prototype.applyPartitioner = function(map_output, numPartitions) {
         j = 0;
         //if it's the first element in map_output
         if (res.length == 0) {
-            tmp = new Array();
+            tmp = [];
             tmp.push(keyval);
             res.push(tmp);
         } else {
@@ -113,7 +114,7 @@ Partitioner.prototype.applyPartitioner = function(map_output, numPartitions) {
             }
             //if the partition still doesn't exist, create it
             if (!found) {
-                tmp = new Array();
+                tmp = [];
                 tmp.push(keyval);
                 res.push(tmp);
             }
@@ -124,7 +125,6 @@ Partitioner.prototype.applyPartitioner = function(map_output, numPartitions) {
 }
 
 
-//Implementation of the function hashCode which doesn't exist in javasript
 //Link: werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
 String.prototype.hashCode = function() {
     var hash = 0,
@@ -143,14 +143,16 @@ String.prototype.hashCode = function() {
 //  functions:
 //          split:  convert file from csv format to a list of data     
 //          generateMapReduceFunctions: generate functions from user js input
-//          linkMapInput(): create arrow between map input and map task marks
+//          searchKeyInRedOutput(key): search map key in reduce output
 //          linkMapReduce(): show connections between map and reduce tasks
+//          linkMapInput(): create arrow between map input and map task marks
 //          partitionDataOnMappers(lst_data): gets each map input data on slot
+//          dataToCSVFormat(tab, separator) : function used for the download of mapReduce output.
 //
 //-------------------------------------------------------------------
 
 function split(csvContent, separator) {
-    lstData = new Array();
+    lstData = [];
     var rows = csvContent.split(/\n|\r/);
     var regex = /\s([^\s]*)$/;
     for (var i = 0; i < rows.length; i++) {
@@ -178,7 +180,6 @@ function generateMapReduceFunctions(textCode) {
 }
 
 function searchKeyInRedOutput(key) {
-    //search map key in reduce output
     for (var i = 0; i < reduce_output.length; i++)
         for (var j = 0; j < reduce_output[i].length; j++) {
             if (reduce_output[i][j].key == key) {
@@ -197,8 +198,8 @@ function linkMapReduce() {
     }
 }
 
+//show connections between map input and map output
 function linkMapInput() {
-    //show connections between map input and map output
     for (var i = 0; i < nb_slot_total; i++) {
         if (lst_data[i] != null)
             print_connection_map(i, i);
@@ -207,12 +208,12 @@ function linkMapInput() {
 
 
 function partitionDataOnMappers(lst_data) {
-    var lst = new Array(); //final list
+    var lst = []; //final list
     var lstMapper; // data per mapper
     //if there's enough slots for all rows, partition = line
     if (lst_data.length <= nb_slot_total) {
         for (var i = 0; i < lst_data.length; i++) {
-            tmp = new Array();
+            tmp = [];
             tmp.push(lst_data[i]);
             lst.push(tmp);
         }
@@ -223,7 +224,7 @@ function partitionDataOnMappers(lst_data) {
     var nbRowsPerMapper = Math.floor(lst_data.length / nb_slot_total);
     var ind = 0;
     for (var i = 0; i < nb_slot_total; i++) {
-        lstMapper = new Array();
+        lstMapper = [];
         for (var j = 0; j < nbRowsPerMapper; j++) {
             lstMapper.push(lst_data[ind]);
             ind++;
@@ -239,19 +240,6 @@ function partitionDataOnMappers(lst_data) {
     return lst;
 }
 
-function singleDataToArray(lst_data) {
-    var lst = new Array();
-    var tmp = lst_data.slice(0);
-    for (var i = 0; i < tmp.length; i++) {
-        tmp[i] = tmp[i].split(" ");
-        for (j = 0; j < tmp[i].length; j++) {
-            lst.push(tmp[i][j]);
-        }
-    }
-    return lst;
-}
-
-//function used for the download of mapReduce output.
 function dataToCSVFormat(tab, separator) {
     var res = "";
     for (i = 0; i < tab.length; i++)

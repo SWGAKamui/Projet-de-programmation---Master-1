@@ -6,8 +6,12 @@
 //         also the mapReduce process   
 //  Functions: 
 //          onClick event of 'RUN' button             
-//          mapReduceProcess()
-//          startMapReduce()        
+//          onClick event of 'DOWNLOAD' button 
+//          mapReduceProcess() : Launches the mapReduce process and does the linking between the marks
+//          startMapReduce(): call split + creation of job + mapReduce process     
+//          mapAllData(job): call map function on every data of slot
+//          shuffleAllData(job, partitioner_output): call shuffle function on every data of reduce slot
+//          reduceAllData(job, shuffle_output): call reduce function on every data of reduce slot
 //-------------------------------------------------------------------
 
 $(document).ready(function() {
@@ -72,9 +76,9 @@ $("a#run").click(function() {
             scrollTop: $("#simulation").offset().top
         }, 1000);
         //init tab
-        tab_input_map = new Array(nb_slot_total);
-        tab_output_map = new Array(nb_slot_red * nb_pc);
-        tab_output_red = new Array(nb_slot_red);
+        tab_input_map = [nb_slot_total];
+        tab_output_map = [nb_slot_red * nb_pc];
+        tab_output_red = [nb_slot_red];
         print_general();
         mapReduceProcess();
     }
@@ -94,7 +98,7 @@ function mapReduceProcess() {
     linkMapReduce();
 }
 
-//call split + creation of job + mapReduce process
+
 function startMapReduce() {
     //apply split
     lst_data = split(data_csv, ';');
@@ -136,20 +140,16 @@ function startMapReduce() {
 }
 
 function mapAllData(job) {
-    map_out = new Array();
-
-    //call map function on every data of slot
+    map_out = [];
     for (var i = 0; i < lst_partition.length; i++) {
         map_input_partition = lst_partition[i];
         map_out.push(job.applyMap(map_input_partition));
-    }
+    }[]
     return map_out;
 }
 
 function shuffleAllData(job, partitioner_output) {
-    shuffle_output = new Array();
-
-    //call shuffle function on every data of reduce slot
+    shuffle_output = [];
     for (var i = 0; i < partitioner_output.length; i++) {
         shuffle_output.push(job.shuffle(partitioner_output[i]));
 
@@ -158,8 +158,7 @@ function shuffleAllData(job, partitioner_output) {
 }
 
 function reduceAllData(job, shuffle_output) {
-    red_output = new Array();
-    //call reduce function on every data of reduce slot
+    red_output = [];
     for (var i in shuffle_output)
         red_output.push(job.applyReduce(shuffle_output[i]));
 

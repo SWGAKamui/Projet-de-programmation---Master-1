@@ -1,9 +1,184 @@
 \chapter{Implémentation}
+\label{ch:implementation}
+\section{Processus d'exécution}
+\subsection{Chargement de la page}
 
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.75\textwidth]{diagram/document.pdf}
+        \caption{Chargement de la page}
+        \label{fig:chargement}
+\end{figure}
+Quand l'URL est saisi, la page se met à charger sans aucune intervention de l'utilisateur.
+La figure \ref{fig:chargement} représente les différents appels de fonctions lors du chargement de la page. En effet, le chargement se fait par l'initialisation de \textit{FATuM} appelé dans le fichier {\tt view.js} qui appelle la bibliothèque {\tt fatum.js}.
+
+\subsection{Lancement de la simulation}
+Lorsque le bouton {\it Run} est cliqué, une série d'actions se produit.
+D'abord, le cluster est affiché (sans les connections). Ensuite, le traitement de {\it MapReduce} est effectué. Enfin, les connections entre les slots sont affichées.\\
+Ces actions sont représentées par trois parties dans les figures \ref{fig:run}, \ref{fig:ProMapRed} et \ref{fig:connection}.
+\begin{figure}[H]
+  \centering
+    \includegraphics[angle=90,height=0.95\textheight]{diagram/diag_seq_init.pdf}
+        \caption{Lancement du bouton RUN}
+        \label{fig:run}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[height=0.95\textheight]{diagram/diag_seq_mapReduce.pdf}
+        \caption{Process de MapReduce}
+        \label{fig:ProMapRed}
+\end{figure}
+
+Lors de l'affichage du cluster, les données fournies par l'utilisateur doivent respecter certaines conditions imposées par la fonction {\tt Test\_param} (par exemple entrer un nombre supérieur à 1 pour le nombre de PC). Une fois les conditions d'utilisation passées, on appelle la bibliothèque {\it FATuM} pour afficher les différents slots du cluster de {\tt map()} et de {\tt reduce()} ainsi que les numéros des machines (affichage sans les connections entre les slots).
+
+Une fois les éléments du cluster de la simulation affichés, le traitement des données s'effectue. Après chaque traitement, on effectue un lien entre chaque slot du cluster pour indiquer le transfert des données au sein de ce dernier représenté par des flèches provenant de {\it FATuM}.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.75\textwidth]{diagram/print_connection.pdf}
+        \caption{Affichage des connections}
+        \label{fig:connection}
+\end{figure}
+
+\subsubsection{Téléchargement des résultats}
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.75\textwidth]{diagram/download.pdf}
+        \caption{Lancement du bouton Download}
+        \label{fig:DL}
+\end{figure}
+
+Une fois la simulation et le traitement des données effectué. L'utilisateur peut récupérer ces données transformer par ses fonctions {\it MapReduce} en les téléchargeant dans un format {\tt .csv} (Figure \ref{fig:DL}).
 
 \input{Graphique.tex}
 \input{Interpreteur.tex}
 
 \section{Limitations}
+
+\subsection{Difficultés rencontrées}
+{\bf FATuM}\\
+
+Etant des débutants en programmation Web, il nous a fallu du temps pour comprendre comment utiliser la bibliothèque {\it FATuM}. C'est grâce aux documentations que nous nous sommes familiarisés avec la bibliothèque même si elles n'étaient pas évidentes à comprendre au début. Une ancienne version de la documentation nous a été fortement utile pour comprendre les fonctions fournies par la bibliothèque (même si certaines fonctions n'existent plus dans l'implémentation de {\it FATuM} la plus récente).\\ 
+
+Dans la nouvelle version de la documentation, il n'y a que les énoncés des fonctions, et c'est avec le temps que nous avons pris l'habitude de voir les exemples d'implémentation de {\it FATuM} dans l'ancienne documentation puis nous référer à la nouvelle documentation pour voir ce qui a changé.\\
+
+{\bf MapReduce}\\
+\begin{itemize}
+\item L'une des étapes de réalisation du projet qui a demandé le plus d'effort est la compréhension du fonctionnement de {\it MapReduce}. En effet, nous avons senti l'importance de bien comprendre comment l'exécution se fait puisque notre projet revient à retranscrire l'exécution sans un framework pour {\it MapReduce}.\\
+Cela a représenté un réel défi de retranscrire la distribution normalement faite par Hadoop.\\
+
+\item Récupérer les fonctions écrites en Javascript par l'utilisateur et les appliquer sur les données.\\
+
+\item Redéfinir la fonction de hashage puisqu'elle est implémenté en langage Java mais n'existe pas en Javascript. 
+\end{itemize}
+
+\subsection{Amélioration possible}
+{\bf FATuM}\\
+Plusieur éléments peuvent être rajoutés à la partie graphique pour améliorer l'utilisation de l'application. Nous citons quelques uns:\\
+\begin{itemize}
+\item Le scrolling horizontal des données.
+\item Un loader pour la simulation.
+\item Une optimisation visuelle du cluster.
+\end{itemize}
+
+\paragraph{}
+Il existe un conflit avec {\it WebGL} qui peut, dans des cas exceptionnels, causer la non-initialisation de {\it FATuM}. Nous ignorons à quoi ce bogue est dû, mais il arrive que le navigateur aie des soucis avec cet élément. Ce problème peut être lié au cache. Mais nous n'avons pas de solution à proposer.
+
+Concernant la partie visualisation, nous avons pensé à rendre cyclique l'affichage des éléments de la simulation(c'est-à-dire: entrée {\tt map()} puis sortie {\tt map()} puis sortie {\tt reduce()} chacun en une colonne). Nous montrons l'affichage tel que nous l'avons imaginé dans la figure \ref{fig:possibilite}.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/cyclique.jpg}
+        \caption{Affichage cyclique de la simulation}
+        \label{fig:possibilite}
+\end{figure}
+Ainsi, un très gros cluster serait plus lisible que la version d'affichage actuelle. Mais dans ce cas, elle peut créer deux soucis: il n'y a plus la linéarité du {\it MapReduce} comme attendu et les connections de {\it FATuM} sont moins lisibles car elles vont traverser les marks qui sont à l'intérieur.\\
+
+{\bf MapReduce}\\
+
+L'une des améliorations possibles est de libérer de l'espace mémoire à chaque fois qu'une tâche a terminé son exécution. Ceci peut donc servir dans le cas d'un très grand fichier de données.\\
+
+Malheureusement, pour des contraintes de temps, nous n'avons pas réussi à implémenter la phase de {\it combiner} ni l'exportation du code {\it MapReduce} en Java qui auraient complété l'implémentation de {\it MapReduce}.\\
+
+Nous pouvons aussi rajouter la gestion d'erreurs :
+Ajouter un analyseur syntaxique pour le code Javascript entré et faire un retour à l'utilisateur sur les erreurs potentiellement commises sur son code.
+
 \section{Indentation du code}
 
+L'indentation du code est garantie par l'outil {\tt js-beautify}\footnote{\url{https://github.com/beautify-web/js-beautify}}
+qui uniformise la forme du code javascript que nous avons réalisé. Cela permet de traiter automatiquement une partie de la factorisation du code.
+
+L'utilisation de règles de codage permet de faciliter la lecture du code source produit entre les développeurs et de minimiser la complexité du code qui peux mener sur le long terme à l'introduction de bogues dans le logiciel.
+
+\subsection{Exemple du résultat produit par {\tt js-beautify}}
+Le code est donné à titre d'exemple uniquement et ne fais pas parti du code source de notre projet.
+
+\begin{figure}[H]
+\begin{lstlisting}
+Partitioner.prototype.apply = function(foo, bar) {
+  var a=[],tmp;
+  var z,y,x,w;
+
+  for(var i=0;i<foo.len;i++){
+    y=foo[i];
+    z=this.get(y.key,y.val,bar);
+
+    w=false;
+    x=0;
+    if(a.len==0){
+      tmp=[];
+      tmp.push(y);
+      a.push(tmp);}
+    else{
+      while(!w && x<a.len){
+        if(z==this.get(a[x][0].key,a[x][0].val,bar)){
+          w=true;
+          a[x].push(y);}
+        x++;}
+        if(!w){
+          tmp=[];
+          tmp.push(y);
+          a.push(tmp);}}}
+  return a;}
+\end{lstlisting}
+\caption{Code avant passage de {\tt js-beautify}}
+\end{figure}
+
+\begin{figure}[H]
+\begin{lstlisting}
+Partitioner.prototype.apply = function(foo, bar) {
+    var a = [],
+        tmp;
+    var z, y, x, w;
+
+    for (var i = 0; i < foo.len; i++) {
+        y = foo[i];
+        z = this.get(y.key, y.val, bar);
+
+        w = false;
+        x = 0;
+        if (a.len == 0) {
+            tmp = [];
+            tmp.push(y);
+            a.push(tmp);
+        } else {
+            while (!w && x < a.len) {
+                if (z == this.get(a[x][0].key, a[x][0].val, bar)) {
+                    w = true;
+                    a[x].push(y);
+                }
+                x++;
+            }
+            if (!w) {
+                tmp = [];
+                tmp.push(y);
+                a.push(tmp);
+            }
+        }
+    }
+    return a;
+}
+\end{lstlisting}
+\caption{Code après passage de {\tt js-beautify}}
+\end{figure}

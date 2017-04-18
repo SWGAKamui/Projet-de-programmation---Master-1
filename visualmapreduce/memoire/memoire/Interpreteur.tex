@@ -1,11 +1,9 @@
 \newpage
 \section{Partie interpréteur}
 
-
-
 \subsection{Les classes}
 
-En Javascript, l'implémentation des classes peut se faire de plusieurs manières. Il existe la façon avec le mot clé '{\tt class}'. Cette manière, bien que plus claire et plus facile à comprendre, n'est pas supportée par tous les navigateurs. Et comme la portabilité est l'un de nos besoins de qualité, nous avons préféré la manière "classique" de créer des classes en Javascript.
+En Javascript, l'implémentation des classes peut se faire de plusieurs manières. Il existe la façon avec le mot clé {\tt class}. Cette manière, bien que plus claire et plus facile à comprendre, n'est pas supportée par tous les navigateurs. Et comme la portabilité est l'un de nos besoins de qualité, nous avons préféré la manière classique de créer des classes en Javascript.\\
 
 La déclaration est par contre un peu différente des autres langages Orientés Objet comme Java ou C++. Nous donnons l'exemple suivant de l'implémentation de la classe {\tt Job}:\\
 
@@ -30,35 +28,39 @@ Job.prototype.applyReduce = function(data) {
 
 \subsection{Retranscription du process mapReduce}
 
+Pour les besoins de notre projet, nous n'avons pas basé notre implémentation du code sur les classes mais plutôt sur les fonctions. Pour cela, nous avons centré le code de l'interpréteur dans un seul fichier {\tt classes.js} qui contient, en plus des classes du projet, les fonctions qui interprètent le code {\it MapReduce} pour fournir les sorties (outputs). Les différentes interactions entre les fonctions (appels, affectations etc..) sont schématisées dans la figure \ref{fig:ProMapRed}.\\
 
-Pour les besoins de notre projet, nous n'avons pas basé notre implémentation du code sur les classes mais plutot sur les fonctions. Pour cela, nous avons centré le code de l'interpréteur dans un seul fichier .js qui contient, en plus des classes du projet, les fonctions qui interprétent le code mapReduce pour fournir les sorties (outputs).
+On peut voir tout le processus de {\it MapReduce} qui commence par la fonction {\tt split()}. Ensuite, un Job est créé. Ce job s'occupe de lancer les tâches de map et de {\tt reduce()}. Entre les deux tâches, un objet de type {\tt Partitioner} est créé pour appliquer la phase de partition à travers l'appel à la fonction {\tt applyPartitioner}. Ensuite vient la phase de {\it shuffle} qui récupére le résultat du {\it partitioner} et retourne un résultat que {\tt reduce()} va exploiter.\\
 
-\subsubsection{Fonction split}
+Ce sont les fonctions {\tt mapAllData(), shuffleAllData() et reduceAllData()} qui s'occupent d'appeler respectivement les fonctions {\tt applyMap(), shuffle() et applyReduce()} sur tous les slots du cluster.
 
-\subsubsection{Fonction eval}
+\subsection{Fonction split}
 
-\subsubsection{Fonction partitionDataOnMappers}
+C'est la première étape à faire dans un process de mapReduce. Cette fonction récupère les données de l'utilisateur sous format textuel et retourne le contenu dans une liste selon le séparateur qu'il a choisi où chaque élément correspond à une ligne de données dont les éléments sont séparés par des espaces\footnote{Exemple: split("je;suis;un;test" , ";") retourne un objet: {je suis un test}.}.\\
+Pour implémenter la fonction, nous avons utilisé les {\bf expressions régulières} ci-dessous:
 
+\begin{itemize}
+\item L'un des problèmes qui peuvent s'imposer est que le retour à la ligne n'est pas le même sous les différents systèmes d'exploitation (Linux, Windows et macOS). Sous Windows le retour à la ligne est effectué avec le caractère "\escape{n}" tandis que sous macOS cela est fait avec le caractère "\escape{r}". 	
+Nous avons donc utilisé une expression régulière dans la fonction {\tt split()} pour que cela marche quelque soit le système d'exploitation sous lequel il a été écrit.\\
 
+\item Dans la même fonction split, on utilise une autre expression régulière {\tt \verb|/\s([^\s]*)$/|} qui s'occupe d'enlever tous les espaces qui ne sont pas nécessaires dans les lignes de données\footnote{Exemple : "{\tt je    ;    contient  ; des;     espaces }"}. L'idée d'utiliser une expression régulière résulte d'un soucis rencontré qui a fait que chaque ligne générée contienne à la fin un espace inutile et cela avait un impact sur les résultats. Une fois nous nous sommes aperçu du soucis, nous l'avons corrigé.
+\end{itemize}
 
-\subsection{Les expressions régulières}
+\subsection{Fonction eval}
+Le premier défi rencontré a été de trouver un moyen de transformer du code sous format textuel en une fonction paramétrable et exécutable qu'on peut directement appeler. Pour ce besoin, nous utilisons la fonction {\tt eval()} qui existe en Javascript. Cette fonction prend en paramètre la forme textuelle du code entré par l'utilisateur. \\
 
-L'un des problèmes qui peuvent s'imposer est que le retour à la ligne n'est pas le même sous les différents systèmes d'exploitation (Linux, Windows et macOS). En effet, sous Windows le retour à la ligne est décelé avec "\escape{n}" alors que sous MacOS c'est fait avec "\r". 	
-Nous avons donc utilisé une expression régulière dans la fonction {\tt split()} pour séparer les lignes du fichier {\tt CSV} quelque soit le système d'exploitation sous lequel il a été écrit.\\
+Après l'appel à {\tt eval()} depuis {\tt generateMapReduceFunctions()} (comme indiqué dans la figure \ref{fig:ProMapRed}), nous obtenons les fonctions, prêtes à être appelées directement dans le script. C'est pour cette raison que nous imposons à l'utilisateur de nommer ses fonctions {\tt map()} et {\tt reduce()}.\\
 
-Dans la même fonction split, on utilise une autre expression régulière 
-%%ici apparait Big Data
+Toutefois, utiliser cette fonction pose quelques problèmes dont nous citons notamment:
 
+\begin{itemize}
+\item {\bf Sécurité}: {\tt eval()} ouvre le code pour des attaques par injection\footnote{C'est un type d'attaque qui permet à un attaquant d'injecter des données dans une application pour exécuter du code malveillant.}. Dans notre projet, vu  que l'application est hébergée dans les serveurs du CREMI alors l'environnement est assez sécurisé. Une tierce personne de l'extérieur ne pourra pas accéder au contenu du site.
+\item {\bf Lenteur}: {\tt eval()} est plus lente que les méthodes alternatives. En effet, « {\it l'évaluation nécessite de faire appel à l'interpréteur JavaScript alors que de nombreuses structures sont optimisées par les moteurs JavaScript modernes} »\footnote{\url{https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets\_globaux/eval}}.
+\item {\bf Débogage}: peut être plus difficile (pas de numéro de ligne, etc…).
+\end{itemize}
 
-\subsection{Difficultés rencontrées}
+\subsection{Fonction hashCode}
+Une fonction {\tt hashCode()} retourne une valeur de hachage \footnote{un entier signé 32-bit.} utile lors de la manipulation des instances. \\
+Retranscrire le code {\it MapReduce} requiert une implémentation de cette fonction qui sera utilisée lors de la phase de {\it partitioner}. Dans cette phase, si l'utilisateur ne fournit pas une implémentation de la fonction {\tt getPartition()}, la fonction de hashage est appelée par défaut.\\
 
-- Apprentissage du process de mapReduce (a pris du temps etc)\\
-- Retranscrire la distribution normalement faite par Hadoop.\\
-- Récupérer les fonctions en JS écrites par l'utilisateur et les appliquer sur les données.
-
-\subsection{Limitations}
-- Pas de free pour les tasks terminées.\\
-- Malheureusement, pour des contraintes de temps, nous n'avons pas réussi à implémenter la phase de combiner ni l'exportation du code mapReduce en Java.\\
-- Gestion d'erreurs: 
-
-{\bf Amélioration possible:} rajouter un analyseur syntaxique pour le code javascript entré et faire un retour à l'utilisateur sur les erreurs potentiellement commises sur son code.
+Une des difficultés rencontrées est que la fonction de hashage, implémenté en langage Java, n'existe pas en Javascript. Nous avons donc redéfinit la fonction de la manière la plus fidèle possible. Pour gagner du temps, nous avons récupéré l'implémentation en Javascript à partir du lien \href{werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/}{suivant\footnote{\url{http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/}}}.
